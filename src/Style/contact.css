@@ -1,0 +1,129 @@
+/* ===== CONTACT PAGE - Improved Alignment & Professional Look ===== */
+
+.contact-section {
+  display: flex;
+  gap: 40px;
+  margin: 50px 0 60px 0;
+  flex-wrap: wrap;
+  align-items: flex-start;     /* Better vertical alignment */
+}
+
+.contact-left {
+  flex: 1;
+  min-width: 320px;
+}
+
+.contact-right {
+  flex: 1;
+  min-width: 320px;
+}
+
+.contact-left h2 {
+  color: #F59933;
+  font-size: 28px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+/* Form Styling */
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #F59933;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(245, 153, 51, 0.15);
+}
+
+.contact-form textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.contact-btn {
+  background-color: #F59933;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+  background-color: #ed9c3e;
+  transform: translateY(-2px);
+}
+
+.contact-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Error & Success */
+.errorText {
+  color: #e74c3c;
+  font-size: 14px;
+  margin: -6px 0 10px 4px;
+}
+
+.successMsg {
+  color: #27ae60;
+  background-color: #f0fff4;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #27ae60;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+/* Map Improvements */
+.contact-map {
+  width: 100%;
+  height: 460px;               /* Slightly taller for better look */
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive Fixes */
+@media screen and (max-width: 992px) {
+  .contact-section {
+    gap: 30px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .contact-section {
+    flex-direction: column;
+    margin: 40px 0;
+  }
+  
+  .contact-left h2 {
+    font-size: 26px;
+  }
+  
+  .contact-map {
+    height: 380px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 15px;
+  }
+}
