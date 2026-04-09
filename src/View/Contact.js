@@ -1,69 +1,51 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import Header from '../Component/Header';
 import Footer from '../Component/footer';
-import PageHead from '../Component/pageHead'
-import PageSubHead from '../Component/pageSubHead'
-import PageBody from '../Component/pageBody'
-import { GetAction } from '../Component/GetAction'
-import "../Style/contact.css"
+import "../Style/contact.css";
+
 function Contact() {
+  const defaultContent = {
+    title: "Contact Us",
+    subTitle: "हमसे संपर्क करें",
+    description: `
+      <p>आप हमारी संस्था से जुड़ने, गोशाला संबंधी सहायता लेने या कोई सुझाव देने के लिए नीचे दिए गए फॉर्म के माध्यम से संपर्क कर सकते हैं।</p>
+      <p>हम आपके संदेश का शीघ्र उत्तर देंगे।</p>
+    `
+  };
 
-  const [getDetails, setDetails] = useState([])
-  const [title, setTitle] = useState()
-  const [subtitle, setSubTitle] = useState()
-  const [markup, setMarkup] = useState()
-
+  const [content, setContent] = useState(defaultContent);
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: ""
+    name: "", email: "", subject: "", message: ""
   });
-
   const [formErrors, setFormErrors] = useState({});
   const [formSuccess, setFormSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ API CALL
-  const requestAPI = async () => {
-    try {
-      const response = await GetAction('get', { page_id: 2 }, `/pages/page`)
-      if (!response) return;
+  // Load page content from localStorage
+  useEffect(() => {
+    const savedContent = localStorage.getItem("contactContent");
+    if (savedContent) {
+      setContent(JSON.parse(savedContent));
+    }
+  }, []);
 
-      setDetails(response)
-      setTitle(response.title)
-      setSubTitle(response.subTitle)
-      setMarkup(response.description)
-
-    } catch (error) {
-      console.error(error);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (formErrors[e.target.name]) {
+      setFormErrors({ ...formErrors, [e.target.name]: "" });
     }
   };
 
-  useEffect(() => {
-    requestAPI();
-  }, []);
-
-  const static_markup = { __html: markup };
-
-  // ✅ INPUT CHANGE
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setFormErrors({ ...formErrors, [e.target.name]: "" });
-  };
-
-  // ✅ VALIDATION
   const validate = () => {
     let errors = {};
-    if (!form.name.trim()) errors.name = "Name required";
-    if (!form.email.trim()) errors.email = "Email required";
-    if (!form.subject.trim()) errors.subject = "Subject required";
-    if (!form.message.trim()) errors.message = "Message required";
+    if (!form.name.trim()) errors.name = "नाम आवश्यक है";
+    if (!form.email.trim()) errors.email = "ईमेल आवश्यक है";
+    if (!form.subject.trim()) errors.subject = "विषय आवश्यक है";
+    if (!form.message.trim()) errors.message = "संदेश आवश्यक है";
     return errors;
   };
 
-  // ✅ SUBMIT
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setFormSuccess("");
 
@@ -75,119 +57,116 @@ function Contact() {
 
     setIsSubmitting(true);
 
-    try {
-      const res = await fetch("http://localhost:8080/api/contact/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(form)
-      });
+    // === SAVE MESSAGE TO LOCALSTORAGE ===
+    const newMessage = {
+      id: Date.now(),
+      name: form.name.trim(),
+      email: form.email.trim(),
+      subject: form.subject.trim(),
+      message: form.message.trim(),
+      date: new Date().toLocaleString('hi-IN')
+    };
 
-      const data = await res.text();
+    // Get existing messages or empty array
+    const existingMessages = JSON.parse(localStorage.getItem("contactMessages") || "[]");
+    const updatedMessages = [newMessage, ...existingMessages];
 
-      setFormSuccess("✅ " + data);
+    localStorage.setItem("contactMessages", JSON.stringify(updatedMessages));
+
+    // Show success and reset form
+    setTimeout(() => {
+      setFormSuccess("✅ आपका संदेश सफलतापूर्वक भेज दिया गया है। धन्यवाद!");
       setForm({ name: "", email: "", subject: "", message: "" });
-
-    } catch (error) {
-      setFormSuccess("❌ Failed to send message");
-    }
-
-    setIsSubmitting(false);
+      setFormErrors({});
+      setIsSubmitting(false);
+    }, 600);
   };
 
   return (
     <>
       <Header />
-      <PageHead title={title} />
-      <PageSubHead title={subtitle} />
 
-      <div className='container-fluid'>
-
-        <PageBody data={static_markup} />
-
-        {/* ✅ CONTACT SECTION */}
-        <div className="contact-section">
-
-          {/* LEFT SIDE */}
-          <div className="contact-left">
-
-            <h2>Contact Us</h2>
-
-            {formSuccess && (
-              <p className="successMsg">{formSuccess}</p>
-            )}
-
-            <form onSubmit={handleSubmit} className="contact-form">
-
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                value={form.name}
-                onChange={handleChange}
-              />
-              {formErrors.name && <p className="errorText">{formErrors.name}</p>}
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-              />
-              {formErrors.email && <p className="errorText">{formErrors.email}</p>}
-
-              <input
-                type="text"
-                name="subject"
-                placeholder="Subject"
-                value={form.subject}
-                onChange={handleChange}
-              />
-              {formErrors.subject && <p className="errorText">{formErrors.subject}</p>}
-
-              <textarea
-                name="message"
-                placeholder="Message"
-                rows={4}
-                value={form.message}
-                onChange={handleChange}
-              />
-              {formErrors.message && <p className="errorText">{formErrors.message}</p>}
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="contact-btn"
-              >
-                {isSubmitting ? "Sending..." : "Send Message 🐄"}
-              </button>
-
-            </form>
-          </div>
-
-          {/* RIGHT SIDE */}
-          {/* RIGHT SIDE - Map */}
-<div className="contact-right">
-  <iframe
-    title="Google Map - Pimpri Chinchwad"
-    src="https://www.google.com/maps?q=Pimpri-Chinchwad&output=embed"
-    className="contact-map"
-    allowFullScreen
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-  ></iframe>
-</div>
+      <div className="contact-page">
+        <div className="contact-header">
+          <h1>{content.title}</h1>
+          {content.subTitle && <h2>{content.subTitle}</h2>}
         </div>
 
+        <div className="container-fluid">
+          <div 
+            className="contact-description"
+            dangerouslySetInnerHTML={{ __html: content.description }} 
+          />
+
+          <div className="contact-section">
+            <div className="contact-left">
+              <h2>संपर्क फॉर्म</h2>
+
+              {formSuccess && <p className="successMsg">{formSuccess}</p>}
+
+              <form onSubmit={handleSubmit} className="contact-form">
+                <input 
+                  type="text" 
+                  name="name" 
+                  placeholder="आपका पूरा नाम" 
+                  value={form.name} 
+                  onChange={handleChange} 
+                />
+                {formErrors.name && <p className="errorText">{formErrors.name}</p>}
+
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="ईमेल पता" 
+                  value={form.email} 
+                  onChange={handleChange} 
+                />
+                {formErrors.email && <p className="errorText">{formErrors.email}</p>}
+
+                <input 
+                  type="text" 
+                  name="subject" 
+                  placeholder="विषय" 
+                  value={form.subject} 
+                  onChange={handleChange} 
+                />
+                {formErrors.subject && <p className="errorText">{formErrors.subject}</p>}
+
+                <textarea 
+                  name="message" 
+                  placeholder="आपका संदेश..." 
+                  rows={5} 
+                  value={form.message} 
+                  onChange={handleChange} 
+                />
+                {formErrors.message && <p className="errorText">{formErrors.message}</p>}
+
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting} 
+                  className="contact-btn"
+                >
+                  {isSubmitting ? "भेजा जा रहा है..." : "संदेश भेजें 🐄"}
+                </button>
+              </form>
+            </div>
+
+            <div className="contact-right">
+              <iframe
+                title="Google Map"
+                src="https://www.google.com/maps?q=Pimpri-Chinchwad&output=embed"
+                className="contact-map"
+                allowFullScreen
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Footer />
     </>
-  )
+  );
 }
 
 export default Contact;
-/* ===== CONTACT PAGE ===== */
-

@@ -4,10 +4,10 @@ import Footer from '../Component/footer';
 import Slider from '../Component/slider';
 import AboutUs from '../Component/aboutUs';
 import Kartavya from '../Component/kartavya';
-import Udesh from '../Component/udesh';
+import Udesh from '../Udesh/Udesh';
 import Sankalp from '../Component/sankalp';
 import DonateBg from '../Component/donateBg';
-import Imggallery from '../Component/imggallery';
+import Imggallery from '../Gallery/Imggallery';
 import {GetAction} from '../Component/GetAction'
 
 
@@ -15,7 +15,7 @@ function Home() {
   const [getDetails,setDetails] = useState([])
   
   const requestAPI = async () => {
-    const url = `/gallary/gallaryList`;
+    const url = `/gallery`;
     let reqParam = {
     }
     const res = await GetAction('get',reqParam,url)
