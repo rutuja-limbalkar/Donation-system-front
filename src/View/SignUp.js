@@ -16,9 +16,33 @@ function SignUp() {
   const [serverMsg, setServerMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // ==================== UPDATED HANDLE CHANGE ====================
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+
+    // 1. Aadhaar: Only allow digits and limit to 12
+    if (name === "aadhaarCard") {
+      const val = value.replace(/\D/g, ""); // Remove non-digits
+      if (val.length <= 12) {
+        setForm({ ...form, [name]: val });
+      }
+      setErrors({ ...errors, [name]: "" });
+      return;
+    }
+
+    // 2. PAN: Convert to UpperCase automatically and limit to 10
+    if (name === "panCard") {
+      const val = value.toUpperCase();
+      if (val.length <= 10) {
+        setForm({ ...form, [name]: val });
+      }
+      setErrors({ ...errors, [name]: "" });
+      return;
+    }
+
+    // Default for other fields
+    setForm({ ...form, [name]: value });
+    setErrors({ ...errors, [name]: "" });
   };
 
   // ==================== FULL FRONTEND VALIDATION ====================
@@ -54,18 +78,17 @@ function SignUp() {
       newErrors.password = "Password must contain at least one special character";
     }
 
-    // PAN Card
-    const pan = form.panCard.trim().toUpperCase();
-    if (!pan) {
+    // PAN Card Validation
+    if (!form.panCard) {
       newErrors.panCard = "PAN is required";
-    } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+    } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(form.panCard)) {
       newErrors.panCard = "Invalid PAN format. Example: ABCDE1234F";
     }
 
-    // Aadhaar Card
-    if (!form.aadhaarCard.trim()) {
+    // Aadhaar Card Validation
+    if (!form.aadhaarCard) {
       newErrors.aadhaarCard = "Aadhaar is required";
-    } else if (!/^\d{12}$/.test(form.aadhaarCard)) {
+    } else if (form.aadhaarCard.length !== 12) {
       newErrors.aadhaarCard = "Aadhaar must be exactly 12 digits";
     }
 
@@ -78,17 +101,14 @@ function SignUp() {
     setServerMsg("");
     setErrors({});
 
-    // Step 1: Frontend Validation
     if (!validateForm()) return;
 
     setIsLoading(true);
 
     try {
       const res = await axios.post("http://localhost:8080/api/users/register", form);
-
       setServerMsg(res.data.message || "Registration successful!");
 
-      // Clear form on success
       if (res.data.success) {
         setForm({ name: "", email: "", password: "", panCard: "", aadhaarCard: "" });
       }
@@ -107,7 +127,11 @@ function SignUp() {
     <div className="auth-container">
       <h2>Register</h2>
 
-      {serverMsg && <p className={`server-message ${serverMsg.includes("success") ? "success" : "error"}`}>{serverMsg}</p>}
+      {serverMsg && (
+        <p className={`server-message ${serverMsg.toLowerCase().includes("success") ? "success" : "error"}`}>
+          {serverMsg}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -153,6 +177,7 @@ function SignUp() {
             placeholder="PAN (e.g., ABCDE1234F)"
             value={form.panCard}
             onChange={handleChange}
+            maxLength="10"
             className={errors.panCard ? "error-input" : ""}
           />
           {errors.panCard && <p className="field-error">{errors.panCard}</p>}
@@ -165,6 +190,7 @@ function SignUp() {
             placeholder="Aadhaar (12 digits)"
             value={form.aadhaarCard}
             onChange={handleChange}
+            maxLength="12"
             className={errors.aadhaarCard ? "error-input" : ""}
           />
           {errors.aadhaarCard && <p className="field-error">{errors.aadhaarCard}</p>}

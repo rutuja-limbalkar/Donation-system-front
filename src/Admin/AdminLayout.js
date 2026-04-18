@@ -6,6 +6,9 @@ const AdminLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Get current user role from localStorage
+  const userRole = localStorage.getItem("role") || "admin"; // "admin", "manager", "donor"
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
@@ -15,17 +18,19 @@ const AdminLayout = () => {
 
   return (
     <div style={styles.wrapper}>
-      <Sidebar />
+      <Sidebar role={userRole} />
 
       <div style={styles.main}>
-
         {/* TOP BAR */}
         <div style={styles.topbar}>
           <div style={styles.breadcrumb}>
             <span>🏠</span>
             <span style={styles.sep}>/</span>
             {breadParts.map((part, i) => (
-              <span key={i} style={i === breadParts.length - 1 ? styles.currentCrumb : styles.crumb}>
+              <span
+                key={i}
+                style={i === breadParts.length - 1 ? styles.currentCrumb : styles.crumb}
+              >
                 {i > 0 && <span style={styles.sep}>/</span>}
                 {part.charAt(0).toUpperCase() + part.slice(1)}
               </span>
@@ -42,7 +47,6 @@ const AdminLayout = () => {
         <div style={styles.content}>
           <Outlet />
         </div>
-
       </div>
     </div>
   );

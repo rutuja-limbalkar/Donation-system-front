@@ -1,0 +1,168 @@
+/* ===== DonationAdmin Professional Style ===== */
+
+.admin-container {
+  padding: 30px 40px;
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 20px;
+}
+
+.admin-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e2937;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.donation-count {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.refresh-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.refresh-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Table Styles */
+.table-wrapper {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.donation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.donation-table thead {
+  background: #1e2937;
+  color: white;
+}
+
+.donation-table th {
+  padding: 18px 16px;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.donation-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.donation-table tr:hover {
+  background: #f8fafc;
+}
+
+.donation-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Column Specific Styles */
+.id-col { width: 80px; font-weight: 600; color: #64748b; }
+.date-col { width: 180px; color: #475569; }
+.name-col { font-weight: 600; color: #1e2937; }
+.email-col { color: #3b82f6; }
+.mobile-col { font-family: monospace; }
+.amount-col { 
+  font-weight: 700; 
+  color: #15803d; 
+  font-size: 16px;
+}
+.payment-col { font-family: monospace; color: #64748b; font-size: 14px; }
+
+/* Status Badge */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.success { background: #dcfce7; color: #166534; }
+
+/* Empty State */
+.no-data {
+  text-align: center;
+  padding: 80px 20px !important;
+  color: #64748b;
+  font-size: 17px;
+}
+
+/* Loading & Error */
+.loading {
+  text-align: center;
+  padding: 80px;
+  font-size: 18px;
+  color: #64748b;
+}
+
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  margin: 40px auto;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.error-title {
+  color: #ef4444;
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.retry-btn:hover {
+  background: #dc2626;
+}
