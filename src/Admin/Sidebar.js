@@ -1,20 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const navItems = [
-  { label: "Dashboard", icon: "⊞", path: "/admin/dashboard" },
-  
-  { label: "Donations", icon: "💳", path: "/admin/donations" },
-  
-  { label: "Gallary", icon: "🖼️", path: "/admin/gallery" },
-  { label: "Pages", icon: "📄", path: "/admin/pages" },
-   { label: "Gaushala", icon: "🐄", path: "/admin/gaushala" },
-  { label: "Udesh", icon: "🎯", path: "/admin/udesh" },
-  { label: "Contact", icon: "📬", path: "/admin/contact" },
-
-];
-
-const Sidebar = () => {
+const Sidebar = ({ role = "admin" }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,22 +9,57 @@ const Sidebar = () => {
     navigate("/login");
   };
 
+  // Role-based navigation items
+  const navItems = {
+    admin: [
+      { label: "Dashboard", icon: "⊞", path: "/admin/dashboard" },
+      { label: "Donations", icon: "💳", path: "/admin/all-donations" },
+      { label: "Gallery", icon: "🖼️", path: "/admin/gallery" },
+      { label: "Pages", icon: "📄", path: "/admin/create-page" },
+      { label: "Gaushala", icon: "🐄", path: "/admin/gaushala" },
+      { label: "Udesh", icon: "🎯", path: "/admin/udesh" },
+      { label: "Contact", icon: "📬", path: "/admin/contact" },
+      {label:"Users", icon: "👥", path: "/admin/userlist"}
+    ],
+    manager: [
+      { label: "Dashboard", icon: "⊞", path: "/admin/manager-dashboard" },
+      { label: "Donations", icon: "💳", path: "/admin/all-donations" },
+      { label: "Add Donation", icon: "🐄", path: "/admin/offline-donation" },
+      { label: "Reports", icon: "📊", path: "/admin/manager-reports" },
+    ],
+    donor: [
+      { label: "Dashboard", icon: "⊞", path: "/admin/donor-dashboard" },
+      { label: "My Donations", icon: "💰", path: "/my-donations" },
+      { label: "My Profile", icon: "🖼️", path: "/profile" },
+      { label: "Contact", icon: "📬", path: "/admin/contact" },
+    ],
+  };
+
+  const currentNav = navItems[role] || navItems.admin;
+
   return (
     <div style={styles.sidebar}>
-
       <div style={styles.logoArea}>
         <div style={styles.logoRow}>
-          {/* ✅ Changed the Icon and the Gradient Background */}
-          <div style={styles.logoIcon}>⚙️</div>
+          <div style={styles.logoIcon}>
+            {role === "admin" ? "⚙️" : role === "manager" ? "👔" : "❤️"}
+          </div>
           <div>
-            <div style={styles.logoText}>Jeevdaya Admin Panel</div>
+            <div style={styles.logoText}>
+              {role === "admin"
+                ? "Jeevdaya Admin Panel"
+                : role === "manager"
+                ? "Manager Portal"
+                : "Donor Portal"}
+            </div>
+            <div style={styles.roleTag}>{role.toUpperCase()}</div>
           </div>
         </div>
       </div>
 
       {/* NAV */}
       <nav style={styles.nav}>
-        {navItems.map((item) => (
+        {currentNav.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
@@ -52,6 +74,12 @@ const Sidebar = () => {
         ))}
       </nav>
 
+      {/* Logout at bottom */}
+      <div style={styles.logoutArea}>
+        <button style={styles.logoutBtn} onClick={handleLogout}>
+          ➜ Logout
+        </button>
+      </div>
     </div>
   );
 };
@@ -92,6 +120,13 @@ const styles = {
     fontWeight: "700",
     lineHeight: "1.3",
   },
+  roleTag: {
+    fontSize: "10px",
+    color: "#fb923c",
+    fontWeight: "600",
+    letterSpacing: "0.5px",
+    marginTop: "2px",
+  },
   nav: {
     flex: 1,
     padding: "10px 8px",
@@ -119,6 +154,21 @@ const styles = {
     fontSize: "16px",
     width: "20px",
     textAlign: "center",
+  },
+  logoutArea: {
+    padding: "16px",
+    borderTop: "1px solid rgba(255,255,255,0.07)",
+  },
+  logoutBtn: {
+    width: "100%",
+    background: "rgba(255,255,255,0.1)",
+    border: "1px solid rgba(255,255,255,0.2)",
+    color: "white",
+    padding: "10px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: "600",
   },
 };
 
